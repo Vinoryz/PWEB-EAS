@@ -202,10 +202,12 @@ function getSortUrl($column, $currentSort, $currentOrder) {
             <div class="search-bar">
                 <input type="text" id="searchInput" class="search-input" placeholder="Search books..." onkeyup="searchTable()">
             </div>
+            <?php if ($_SESSION['role'] === 'librarian'): ?>
             <a href="add_book.php" class="add-book-btn">
                 <i class="fas fa-plus"></i>
                 Add New Book
             </a>
+            <?php endif; ?>
         </div>
         <table class="book-list">
             <thead>
@@ -268,11 +270,12 @@ function getSortUrl($column, $currentSort, $currentOrder) {
                         <td><?= htmlspecialchars($book['b_status']) ?></td>
                         <td>
                             <div class="action-buttons">
-                            <form id="deleteForm_<?= htmlspecialchars($book['ISBN']) ?>" action="delete_book.php" method="POST" onsubmit="event.preventDefault(); showModal('deleteForm_<?= htmlspecialchars($book['ISBN']) ?>');">
-                                <input type="hidden" name="isbn" value="<?= htmlspecialchars($book['ISBN']) ?>">
-                                <button type="submit" class="delete-button">Delete</button>
-                            </form>
-
+                                <?php if ($_SESSION['role'] === 'librarian'): ?>
+                                    <form id="deleteForm_<?= htmlspecialchars($book['ISBN']) ?>" action="delete_book.php" method="POST" onsubmit="event.preventDefault(); showModal('deleteForm_<?= htmlspecialchars($book['ISBN']) ?>');">
+                                        <input type="hidden" name="isbn" value="<?= htmlspecialchars($book['ISBN']) ?>">
+                                        <button type="submit" class="delete-button">Delete</button>
+                                    </form>
+                                <?php endif; ?>
                                 <a href="print_book.php?isbn=<?= urlencode($book['ISBN']) ?>" class="print-button">Print</a>
                             </div>
                         </td>
