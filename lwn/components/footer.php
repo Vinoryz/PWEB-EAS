@@ -14,9 +14,7 @@
                 <ul>
                     <li><a href="./index.php">Home</a></li>
                     <li><a href="./profile.php">Profile</a></li>
-                    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'librarian'): ?>
-                        <li><a href="./book_list.php" class="btn">List of Books</a></li>
-                    <?php endif; ?>
+                    <li><a href="./book_list.php" class="btn">List of Books</a></li>
                     <li><a href="./logout.php">Logout</a></li>
                 </ul>
             </div>

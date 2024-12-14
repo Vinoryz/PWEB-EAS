@@ -1,13 +1,5 @@
-DROP DATABASE IF EXISTS xlib;
 CREATE DATABASE xlib;
 USE xlib;
-
-DROP TABLE IF EXISTS checkout;
-DROP TABLE IF EXISTS reader;
-DROP TABLE IF EXISTS book;
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS librarian;
-DROP TABLE IF EXISTS shelf;
 
 -- First, create tables with no foreign key dependencies
 CREATE TABLE shelf (

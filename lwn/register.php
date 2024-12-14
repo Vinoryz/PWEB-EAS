@@ -13,28 +13,28 @@
 <?php
     include './components/db-connect.php';
 
-    if (isset($_POST['register'])) {
-        $u_Username = htmlspecialchars($_POST['username']);
-        // $u_Password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $u_password = $_POST['password'];
-        $u_Fullname = htmlspecialchars($_POST['fullname']);
-        $u_Email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-        $u_Phone = htmlspecialchars($_POST['phone']);
-        $u_Address = htmlspecialchars($_POST['address']);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
+        $u_username = htmlspecialchars(trim($_POST['username']));
+        // $u_password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT); // Secure password hash
+        $u_password =  $_POST['password'];
+        $u_fullname = htmlspecialchars(trim($_POST['fullname']));
+        $u_email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+        $u_phone = htmlspecialchars(trim($_POST['phone']));
+        $u_address = htmlspecialchars(trim($_POST['address']));
 
         // Check if username or email already exists
-        $check_user = $conn->prepare("SELECT * FROM `user` WHERE u_username = ? OR u_Email = ?");
-        $check_user->execute([$u_Username, $u_Email]);
+        $check_user = $conn->prepare("SELECT * FROM `user` WHERE u_username = ? OR u_email = ?");
+        $check_user->execute([$u_username, $u_email]);
 
         if ($check_user->rowCount() > 0) {
             $message = 'Username or Email is already registered.';
         } else {
-            $insert_user = $conn->prepare("INSERT INTO `User` (u_Username, u_Password, u_Fullname, u_Email, u_Phone, u_Address) VALUES (?, ?, ?, ?, ?, ?)");
-            $insert_user->execute([$u_Username, $u_Password, $u_Fullname, $u_Email, $u_Phone, $u_Address]);
-
-            if ($insert_user) {
-                $message = 'Registration successful. You can now login.';
-                header('location:login.php');
+            // Insert new user into the database
+            $insert_user = $conn->prepare(
+                "INSERT INTO `user` (u_username, u_password, u_fullname, u_email, u_phone, u_address) VALUES (?, ?, ?, ?, ?, ?)"
+            );
+            if ($insert_user->execute([$u_username, $u_password, $u_fullname, $u_email, $u_phone, $u_address])) {
+                header('Location: login.php');
                 exit();
             } else {
                 $message = 'Registration failed. Please try again.';
@@ -46,21 +46,21 @@
 <div class="register-container">
     <form class="form" action="register.php" method="POST">
         <p class="form-title">REGISTER</p>
-        <?php if (isset($message)) { echo '<p class="error-message">' . $message . '</p>'; } ?>
+        <?php if (isset($message)) { echo '<p class="error-message">' . htmlspecialchars($message) . '</p>'; } ?>
         <div class="input-container">
-            <input type="text" name="username" placeholder="Enter Username" required oninput="this.value = this.value.trim();" />
+            <input type="text" name="username" placeholder="Enter Username" required />
         </div>
         <div class="input-container">
-            <input type="password" name="password" placeholder="Enter Password" required oninput="this.value = this.value.trim();" />
+            <input type="password" name="password" placeholder="Enter Password" required />
         </div>
         <div class="input-container">
-            <input type="text" name="fullname" placeholder="Enter Full Name" required oninput="this.value = this.value.trim();" />
+            <input type="text" name="fullname" placeholder="Enter Full Name" required />
         </div>
         <div class="input-container">
-            <input type="email" name="email" placeholder="Enter Email" required oninput="this.value = this.value.trim();" />
+            <input type="email" name="email" placeholder="Enter Email" required />
         </div>
         <div class="input-container">
-            <input type="text" name="phone" placeholder="Enter Phone Number" required oninput="this.value = this.value.replace(/\D/g, '');" />
+            <input type="text" name="phone" placeholder="Enter Phone Number" required pattern="[0-9]+" title="Phone number should only contain digits." />
         </div>
         <div class="input-container">
             <input type="text" name="address" placeholder="Enter Address" required />
@@ -68,8 +68,8 @@
         <button type="submit" name="register" class="submit">
             Register
         </button>
-        <p class="signup-link">Already have an account? <a href="./login.php">Login here</a>.</p>
-        <p class="signup-link">A Librarian? <a href="./login-lib.php">Librarian login here</a></p>
+        <p class="signup-link">Already have an account? <a href="login.php">Login here</a>.</p>
+        <p class="signup-link">A Librarian? <a href="login-lib.php">Librarian login here</a></p>
     </form>
 </div>
 

@@ -202,10 +202,12 @@ function getSortUrl($column, $currentSort, $currentOrder) {
             <div class="search-bar">
                 <input type="text" id="searchInput" class="search-input" placeholder="Search books..." onkeyup="searchTable()">
             </div>
+            <?php if ($_SESSION['role'] === 'librarian'): ?>
             <a href="add_book.php" class="add-book-btn">
                 <i class="fas fa-plus"></i>
                 Add New Book
             </a>
+            <?php endif; ?>
         </div>
         <table class="book-list">
             <thead>
