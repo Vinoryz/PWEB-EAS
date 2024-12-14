@@ -35,7 +35,7 @@ CREATE TABLE book (
     Publisher VARCHAR(100) NOT NULL,
     PublicationYear INT NOT NULL,
     Genre VARCHAR(100) NOT NULL,
-    Synopsis VARCHAR(255) NOT NULL,
+    Synopsis VARCHAR(4096) NOT NULL,
     b_status VARCHAR(20) NOT NULL DEFAULT 'Available',
     shelfID INT NOT NULL,
     FOREIGN KEY (shelfID) REFERENCES shelf(shelfID)
